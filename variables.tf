@@ -1,5 +1,5 @@
 variable "prefix" {
-  default = "jo"
+  default = "jo-gce"
 }
 variable "project" {
     default = "jo-playground-1-ateh"
