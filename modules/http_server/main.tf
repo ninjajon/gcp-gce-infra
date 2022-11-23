@@ -21,3 +21,37 @@ resource "google_compute_instance" "http_server" {
 
   tags = ["http-server"]
 }
+
+# Bootstrapping Script
+data "template_file" "windows-metadata" {
+template = <<EOF
+# Install IIS
+Install-WindowsFeature -name Web-Server -IncludeManagementTools;
+EOF
+}
+
+resource "google_compute_instance" "windows_http_server" {
+  zone         = var.zone
+  name         = "${var.prefix}-windows-instance"
+  machine_type = "n2-standard-2"
+
+ metadata = {
+    sysprep-specialize-script-ps1 = data.template_file.windows-metadata.rendered
+  }
+
+  boot_disk {
+    initialize_params {
+      image = "windows-cloud/windows-2012-r2"
+    }
+  }
+
+  network_interface {
+    subnetwork = var.subnet
+  }
+
+  shielded_instance_config {
+    enable_secure_boot = true
+  }
+
+  tags = ["http-server"]
+}
