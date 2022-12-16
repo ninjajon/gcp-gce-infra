@@ -15,23 +15,7 @@ steps:
   args: 
   - '-c'
   - |
-      if [ $BRANCH_NAME == "main" ]; then
-        for dir in environments/*/
-        do 
-          cd ${dir}   
-          env=${dir%*/}
-          env=${env#*/}
-          echo ""
-          echo "*************** TERRAFORM INIT ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform init || exit 1
-          cd ../../
-        done
-      else
-        cd environments/dev
-        terraform init
-      fi 
+      terraform init
 
 - id: 'tf plan'
   name: 'hashicorp/terraform:latest'
@@ -39,44 +23,13 @@ steps:
   args: 
   - '-c'
   - |
-      if [ $BRANCH_NAME == "main" ]; then
-        for dir in environments/*/
-        do 
-          cd ${dir}   
-          env=${dir%*/}
-          env=${env#*/}
-          echo ""
-          echo "*************** TERRAFORM PLAN ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform plan || exit 1
-          cd ../../
-        done
-      else
-        cd environments/dev
-        terraform plan
-      fi
+      terraform plan
 
 - id: 'tf apply'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
+  timeout: '1800s'
   args: 
   - '-c'
   - |
-      if [ $BRANCH_NAME == "main" ]; then
-        for dir in environments/*/
-        do 
-          cd ${dir}   
-          env=${dir%*/}
-          env=${env#*/}
-          echo ""
-          echo "*************** TERRAFORM APPLY ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform apply -auto-approve || exit 1
-          cd ../../
-        done
-      else
-        cd environments/dev
-        terraform apply -auto-approve
-      fi
+      terraform apply -auto-approve

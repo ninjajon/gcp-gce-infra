@@ -15,16 +15,6 @@ steps:
   args: 
   - '-c'
   - |
-      cd environments/dev
       terraform init
       terraform destroy -auto-approve
-
-- id: 'tf destroy prd'
-  name: 'hashicorp/terraform:1.0.0'
-  entrypoint: 'sh'
-  args: 
-  - '-c'
-  - |
-      cd environments/prd
-      terraform init
-      terraform destroy -auto-approve
+      
